@@ -14,8 +14,9 @@ def linear_layout(data):
     
 
     living_height = length * 0.3
-    bedroom_zone_height = length * 0.4
     service_height = length * 0.3
+    corridor_height = 4
+    bedroom_zone_height = (length * 0.4)
 
     rooms = []
 
@@ -75,6 +76,14 @@ def linear_layout(data):
         "width": kitchen_width,
         "height": service_height
     })
+    
+    rooms.append({
+        "name": "Corridor",
+        "x": 0,
+        "y": service_height,
+        "width": width,
+        "height": corridor_height
+        })
 
     rooms.append({
         "name": "Common Bathroom",
