@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HouseAI Pro | Architecture Intelligence</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -20,11 +18,9 @@
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
             --accent: #22d3ee;
-            --success: #10b981;
-            --warning: #f59e0b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s ease; }
 
         body {
             background-color: var(--bg-dark);
@@ -39,7 +35,6 @@
         .glass {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
         }
@@ -47,89 +42,54 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
 
         header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem 0;
-            border-radius: 20px;
+            text-align: center; margin-bottom: 2rem; padding: 2rem 0; border-radius: 20px;
             background: linear-gradient(135deg, rgba(30,41,59,0.8) 0%, rgba(15,23,42,0.9) 100%);
             border: 1px solid rgba(255,255,255,0.05);
         }
 
         header h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
+            font-size: 3.5rem; font-weight: 800; 
             background: linear-gradient(to right, #ffffff, #22d3ee);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -1px;
+            -webkit-background-clip: text; color: transparent; letter-spacing: -1px;
         }
 
         .main-grid { display: grid; grid-template-columns: 350px 1fr; gap: 2rem; }
         .sidebar { padding: 2rem; height: fit-content; }
         .input-group { margin-bottom: 1.5rem; }
-        
-        .input-group label {
-            display: block; font-size: 0.875rem; color: var(--text-dim); margin-bottom: 0.5rem;
-        }
-        
+        .input-group label { display: block; font-size: 0.875rem; color: var(--text-dim); margin-bottom: 0.5rem; }
         .input-group input {
             width: 100%; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 0.75rem; border-radius: 8px; color: white; font-size: 1rem;
         }
         
-        .input-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
-
         .btn-primary {
             width: 100%; padding: 1rem; background: var(--primary); color: white; border: none;
-            border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            border-radius: 8px; font-weight: 600; cursor: pointer;
         }
-        
         .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
 
         .btn-secondary {
             padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.05); color: white;
             border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; cursor: pointer;
         }
-        
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
 
-        .canvas-container {
-            position: relative; padding: 1.5rem; display: flex; flex-direction: column;
-            align-items: center; min-height: 600px;
-        }
-
-        #floorPlanCanvas, #threeJsContainer {
-            width: 100%; height: 600px; border-radius: 12px; background: #fff; margin-top: 1rem;
-        }
-        
-        #threeJsContainer { background: #0f172a; }
-
+        .canvas-container { position: relative; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; min-height: 600px; }
+        #floorPlanCanvas, #threeJsContainer { width: 100%; height: 600px; border-radius: 12px; background: #fff; margin-top: 1rem; }
+        #threeJsContainer { background: #0f172a; overflow: hidden; }
         .view-switcher { display: flex; gap: 1rem; margin-bottom: 1rem; }
         .results-card { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
         .stat-item { background: rgba(15, 23, 42, 0.3); padding: 1rem; border-radius: 8px; }
         .stat-label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; }
         .stat-value { font-size: 1.125rem; font-weight: 700; color: var(--accent); }
-
-        #aiMessage {
-            margin: 1rem 0; padding: 1rem; background: rgba(99, 102, 241, 0.05);
-            border-left: 4px solid var(--primary); border-radius: 4px; font-size: 0.9rem; line-height: 1.5;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-in { animation: fadeIn 0.5s ease forwards; }
     </style>
 </head>
 <body>
 
-    <div class="container animate-in">
+    <div class="container">
         <header>
             <h1>HouseAI Pro</h1>
-            <p style="color:var(--text-dim);">Advanced Generative Architecture for Modern Living</p>
+            <p style="color:var(--text-dim);">Advanced Generative Architecture</p>
         </header>
         
         <div class="main-grid">
@@ -137,22 +97,19 @@
                 <h3>Design Requirements</h3>
                 <div class="input-group">
                     <label>Plot Length (ft)</label>
-                    <input type="number" id="length" value="40" min="20" max="100">
+                    <input type="number" id="length" value="40">
                 </div>
                 <div class="input-group">
                     <label>Plot Width (ft)</label>
-                    <input type="number" id="width" value="30" min="15" max="60">
+                    <input type="number" id="width" value="30">
                 </div>
                 <div class="input-group">
                     <label>Bedrooms Wanted</label>
-                    <input type="number" id="bedrooms" value="2" min="1" max="5">
+                    <input type="number" id="bedrooms" value="3">
                 </div>
-                
                 <button class="btn-primary" onclick="generatePlan()">Generate Architecture Plan</button>
                 
                 <div id="resultsCard" class="results-card" style="display:none;">
-                    <h3>Project Summary</h3>
-                    <div id="aiMessage"></div>
                     <div class="stat-grid">
                         <div class="stat-item">
                             <span class="stat-label">AI Score</span>
@@ -163,10 +120,6 @@
                             <div class="stat-value" id="budgetTxt">--</div>
                         </div>
                     </div>
-                    <div style="margin-top:1.5rem;">
-                        <span class="stat-label">Resource Estimation</span>
-                        <div id="materialsTxt" style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.5rem;">--</div>
-                    </div>
                 </div>
             </aside>
 
@@ -176,14 +129,9 @@
                         <button id="btn-2d" class="btn-secondary" onclick="show2D()" style="border-bottom: 2px solid var(--primary);">CAD Blueprint (2D)</button>
                         <button id="btn-3d" class="btn-secondary" onclick="show3D()">Interactive (3D)</button>
                     </div>
-                    
-                    <h2 id="layoutTitle" style="margin-bottom: 1rem; color: var(--accent);">Initialize Your Plot</h2>
-                    
+                    <h2 id="layoutTitle" style="color: var(--accent);">Initialize Your Plot</h2>
                     <canvas id="floorPlanCanvas" width="600" height="600"></canvas>
-                    
                     <div id="threeJsContainer" style="display: none;"></div>
-                    
-                    <p id="emptyState" style="color: var(--text-dim); position: absolute; top: 50%;">Enter your constraints and click generate</p>
                 </div>
             </main>
         </div>
@@ -204,209 +152,371 @@
 
             try {
                 const response = await fetch('http://127.0.0.1:8000/get-my-plan', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
                     body: JSON.stringify(data)
                 });
-
+                
                 if (!response.ok) throw new Error("Server Error");
-
+                
                 const result = await response.json();
                 currentPlan = result.plan;
 
                 document.getElementById('resultsCard').style.display = 'block';
                 document.getElementById('viewControls').style.display = 'flex';
-                document.getElementById('emptyState').style.display = 'none';
                 document.getElementById('layoutTitle').innerText = currentPlan.layout_type;
-                document.getElementById('aiMessage').innerText = result.ai_advice || "Optimized successfully.";
                 document.getElementById('aiScoreTxt').innerText = `${result.score}/100`;
                 document.getElementById('budgetTxt').innerText = result.budget;
-                document.getElementById('materialsTxt').innerHTML = result.materials.replace(/,/g, '<br>');
                 
                 show2D(); 
                 draw2D(currentPlan.rooms, data.width, data.length);
-            } catch (err) {
+            } catch (err) { 
                 console.error(err);
-                alert("Connection Failed! Is Uvicorn running?");
+                alert("Connection Failed! Make sure Uvicorn is running on port 8000."); 
             }
         }
 
-        // --- NEW PROFESSIONAL CAD DRAWING LOGIC ---
+        // ==========================================
+        //         2D CAD BLUEPRINT ENGINE
+        // ==========================================
         function draw2D(rooms, plotW, plotL) {
             const canvas = document.getElementById('floorPlanCanvas');
             const ctx = canvas.getContext('2d');
-            
             const container = canvas.parentElement;
+            
             canvas.width = container.offsetWidth - 48; 
             canvas.height = 600; 
-
-            // White Background for Print/CAD look
+            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#ffffff";
+            ctx.fillStyle = "#ffffff"; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Check if we need to draw a second floor
             const hasFirstFloor = rooms.some(r => r.floor === 1);
             const availableWidth = hasFirstFloor ? canvas.width / 2 : canvas.width;
-            
-            // Scaling logic
             const scale = Math.min((availableWidth - 40) / plotW, (canvas.height - 60) / plotL) * 0.9;
 
             function drawFloor(floorNum, offsetX) {
                 const floorRooms = rooms.filter(r => (r.floor || 0) === floorNum);
                 if (floorRooms.length === 0) return;
-
+                
                 const startX = offsetX + (availableWidth - plotW * scale) / 2;
                 const startY = (canvas.height - plotL * scale) / 2 + 10;
 
-                // Floor Title
-                ctx.fillStyle = "#000000";
-                ctx.font = "bold 16px Arial";
+                ctx.fillStyle = "#000000"; 
+                ctx.font = "bold 16px Arial"; 
                 ctx.textAlign = "center";
                 ctx.fillText(floorNum === 0 ? "GROUND FLOOR" : "FIRST FLOOR", startX + (plotW * scale)/2, startY - 15);
 
-                // Draw Plot Boundary
-                ctx.setLineDash([5, 5]);
-                ctx.strokeStyle = "#888888";
-                ctx.lineWidth = 1;
-                ctx.strokeRect(startX, startY, plotW * scale, plotL * scale);
+                ctx.setLineDash([5, 5]); 
+                ctx.strokeStyle = "#888888"; 
+                ctx.strokeRect(startX, startY, plotW * scale, plotL * scale); 
                 ctx.setLineDash([]);
 
-                // 1. Draw Thick Walls & Floors
+                // Draw Walls
                 floorRooms.forEach(r => {
                     const rx = startX + r.x * scale;
                     const ry = startY + r.y * scale;
                     const rw = r.width * scale;
                     const rh = r.height * scale;
-
-                    ctx.fillStyle = "#ffffff";
+                    
+                    ctx.fillStyle = "#ffffff"; 
                     ctx.fillRect(rx, ry, rw, rh);
-
-                    ctx.strokeStyle = "#000000";
-                    ctx.lineWidth = r.is_open ? 1 : 4; // Thick walls!
+                    
+                    ctx.strokeStyle = "#000000"; 
+                    ctx.lineWidth = r.is_open ? 1 : 4; 
                     if (r.is_open) ctx.setLineDash([5, 5]);
-                    ctx.strokeRect(rx, ry, rw, rh);
+                    ctx.strokeRect(rx, ry, rw, rh); 
                     ctx.setLineDash([]);
-
-                    // Draw Cross (X) for Open spaces or Stairs
-                    const name = r.name.toLowerCase();
-                    if (name.includes("stair") || name.includes("parking") || name.includes("open") || name.includes("passage")) {
-                        ctx.strokeStyle = "#000000";
-                        ctx.lineWidth = 0.5;
+                    
+                    if (r.name.toLowerCase().match(/stair|parking|open|balcony/)) {
+                        ctx.lineWidth = 0.5; 
                         ctx.beginPath();
-                        ctx.moveTo(rx, ry);
-                        ctx.lineTo(rx + rw, ry + rh);
-                        ctx.moveTo(rx + rw, ry);
-                        ctx.lineTo(rx, ry + rh);
+                        ctx.moveTo(rx, ry); ctx.lineTo(rx + rw, ry + rh);
+                        ctx.moveTo(rx + rw, ry); ctx.lineTo(rx, ry + rh); 
                         ctx.stroke();
                     }
                 });
 
-                // 2. Draw Text (Room Names and Sizes)
+                // Draw Architectural Features (Doors, Windows)
+                floorRooms.forEach(r => {
+                    if (!r.features) return;
+                    r.features.forEach(f => {
+                        const rx = startX + r.x * scale;
+                        const ry = startY + r.y * scale;
+                        const fSize = f.size * scale;
+                        let cx = 0, cy = 0; 
+                        
+                        if (f.wall === 'top') { cx = rx + f.pos * scale; cy = ry; }
+                        else if (f.wall === 'bottom') { cx = rx + f.pos * scale; cy = ry + r.height * scale; }
+                        else if (f.wall === 'left') { cx = rx; cy = ry + f.pos * scale; }
+                        else if (f.wall === 'right') { cx = rx + r.width * scale; cy = ry + f.pos * scale; }
+
+                        ctx.fillStyle = "#ffffff";
+                        if (f.wall === 'top' || f.wall === 'bottom') {
+                            ctx.fillRect(cx - fSize/2, cy - 3, fSize, 6); 
+                        } else {
+                            ctx.fillRect(cx - 3, cy - fSize/2, 6, fSize);
+                        }
+
+                        ctx.strokeStyle = "#000000"; 
+                        ctx.lineWidth = 1;
+                        
+                        if (f.type === 'window') {
+                            if (f.wall === 'top' || f.wall === 'bottom') { 
+                                ctx.strokeRect(cx - fSize/2, cy - 2, fSize, 4); 
+                                ctx.beginPath(); ctx.moveTo(cx - fSize/2, cy); ctx.lineTo(cx + fSize/2, cy); ctx.stroke(); 
+                            } else { 
+                                ctx.strokeRect(cx - 2, cy - fSize/2, 4, fSize); 
+                                ctx.beginPath(); ctx.moveTo(cx, cy - fSize/2); ctx.lineTo(cx, cy + fSize/2); ctx.stroke(); 
+                            }
+                        } 
+                        else if (f.type === 'door' || f.type === 'main_door') {
+                            ctx.beginPath();
+                            if (f.wall === 'top' || f.wall === 'bottom') { 
+                                ctx.moveTo(cx - fSize/2, cy); 
+                                ctx.lineTo(cx - fSize/2, cy + (f.wall==='top'?fSize:-fSize)); 
+                                ctx.arc(cx - fSize/2, cy, fSize, (f.wall==='top'?0:Math.PI), (f.wall==='top'?Math.PI/2:Math.PI*1.5), f.wall==='bottom'); 
+                            } else { 
+                                ctx.moveTo(cx, cy - fSize/2); 
+                                ctx.lineTo(cx + (f.wall==='left'?fSize:-fSize), cy - fSize/2); 
+                                ctx.arc(cx, cy - fSize/2, fSize, (f.wall==='left'?Math.PI/2:Math.PI*1.5), (f.wall==='left'?0:Math.PI), f.wall==='left'); 
+                            }
+                            ctx.stroke();
+                        }
+                        else if (f.type === 'gate') {
+                            ctx.setLineDash([4, 4]);
+                            ctx.beginPath(); ctx.moveTo(cx - fSize/2, cy); ctx.lineTo(cx + fSize/2, cy); ctx.stroke();
+                            ctx.setLineDash([]);
+                            ctx.font = `italic 10px Arial`; ctx.textAlign = "center";
+                            ctx.fillText("GATE", cx, cy - 10);
+                        }
+                        else if (f.type === 'arch') {
+                            ctx.setLineDash([2, 2]);
+                            ctx.beginPath();
+                            if (f.wall === 'top' || f.wall === 'bottom') { ctx.moveTo(cx - fSize/2, cy); ctx.lineTo(cx + fSize/2, cy); } 
+                            else { ctx.moveTo(cx, cy - fSize/2); ctx.lineTo(cx, cy + fSize/2); }
+                            ctx.stroke();
+                            ctx.setLineDash([]);
+                        }
+                    });
+                });
+
+                // Draw Text
                 floorRooms.forEach(r => {
                     const cx = startX + r.x * scale + (r.width * scale) / 2;
                     const cy = startY + r.y * scale + (r.height * scale) / 2;
-
-                    ctx.fillStyle = "#000000";
-                    ctx.textAlign = "center";
+                    
+                    ctx.fillStyle = "#000000"; 
+                    ctx.textAlign = "center"; 
                     ctx.textBaseline = "middle";
-
-                    ctx.font = `600 ${Math.max(10, scale * 0.45)}px Arial, sans-serif`;
+                    
+                    ctx.font = `600 ${Math.max(10, scale * 0.45)}px Arial`; 
                     ctx.fillText(r.name.toUpperCase(), cx, cy - 8);
-
-                    ctx.font = `400 ${Math.max(9, scale * 0.35)}px Arial, sans-serif`;
-                    const wStr = Number.isInteger(r.width) ? r.width : r.width.toFixed(1);
-                    const hStr = Number.isInteger(r.height) ? r.height : r.height.toFixed(1);
-                    ctx.fillText(`${wStr}'0" X ${hStr}'0"`, cx, cy + 8);
+                    
+                    ctx.font = `400 ${Math.max(9, scale * 0.35)}px Arial`; 
+                    ctx.fillText(`${r.width.toFixed(1)}'0" X ${r.height.toFixed(1)}'0"`, cx, cy + 8);
                 });
             }
 
-            // Draw side-by-side if a duplex is generated
             drawFloor(0, 0); 
-            if (hasFirstFloor) {
+            if (hasFirstFloor) { 
                 drawFloor(1, availableWidth); 
-                
-                // Draw a divider line between the two floors
-                ctx.strokeStyle = "#dddddd";
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(canvas.width / 2, 20);
-                ctx.lineTo(canvas.width / 2, canvas.height - 20);
-                ctx.stroke();
+                ctx.strokeStyle = "#dddddd"; 
+                ctx.beginPath(); 
+                ctx.moveTo(canvas.width/2, 20); 
+                ctx.lineTo(canvas.width/2, canvas.height-20); 
+                ctx.stroke(); 
             }
+        }
+
+        // ==========================================
+        //         3D REALISTIC CONSTRUCTION ENGINE
+        // ==========================================
+        function createTileTexture() {
+            const canvas = document.createElement('canvas'); 
+            canvas.width = 128; canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = '#b65c3e'; // Dark terracotta
+            ctx.fillRect(0,0,128,128); 
+            
+            ctx.fillStyle = '#cf7a5c'; // Light terracotta
+            ctx.fillRect(0,0,64,64); 
+            ctx.fillRect(64,64,64,64);
+            
+            const tex = new THREE.CanvasTexture(canvas); 
+            tex.wrapS = THREE.RepeatWrapping; 
+            tex.wrapT = THREE.RepeatWrapping; 
+            tex.repeat.set(12, 12); 
+            return tex;
         }
 
         function init3D(rooms) {
             const container = document.getElementById('threeJsContainer');
             container.innerHTML = '';
-            
-            const w = container.offsetWidth;
-            const h = 600;
+            const w = container.offsetWidth, h = 600;
             
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0f172a);
+            scene.background = new THREE.Color(0x87CEEB); // Realistic Sky Blue
             
-            camera = new THREE.PerspectiveCamera(60, w / h, 1, 2000);
-            camera.position.set(60, 60, 100);
+            camera = new THREE.PerspectiveCamera(50, w / h, 1, 2000);
+            camera.position.set(-60, 70, -80); // Front-left view
             
             renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(w, h);
+            renderer.setSize(w, h); 
+            renderer.shadowMap.enabled = true; 
             container.appendChild(renderer.domElement);
 
-            scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
-            dirLight.position.set(200, 500, 300);
-            scene.add(dirLight);
+            // Lighting
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+            const sunLight = new THREE.DirectionalLight(0xffffff, 0.7);
+            sunLight.position.set(-100, 200, -50); 
+            sunLight.castShadow = true;
+            sunLight.shadow.camera.left = -50; 
+            sunLight.shadow.camera.right = 50; 
+            sunLight.shadow.camera.top = 50; 
+            sunLight.shadow.camera.bottom = -50;
+            scene.add(sunLight);
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
+            controls.enableDamping = true; 
+            controls.maxPolarAngle = Math.PI / 2 - 0.05;
+            controls.target.set(0, 10, 0);
 
-            const groundGeo = new THREE.PlaneGeometry(200, 200);
-            const groundMat = new THREE.MeshPhongMaterial({ color: 0x1e293b });
-            const ground = new THREE.Mesh(groundGeo, groundMat);
-            ground.rotation.x = -Math.PI/2;
-            ground.position.y = -0.5;
+            // Environment
+            const ground = new THREE.Mesh(new THREE.PlaneGeometry(300, 300), new THREE.MeshPhongMaterial({ color: 0x4a5d23 }));
+            ground.rotation.x = -Math.PI/2; 
+            ground.position.y = -0.5; 
+            ground.receiveShadow = true; 
             scene.add(ground);
 
-            rooms.forEach(r => {
-                const floorLevel = (r.floor || 0) * 12;
-                const wallH = r.is_open ? 2 : 10;
-                const geometry = new THREE.BoxGeometry(r.width, wallH, r.height);
-                
-                let color = 0x6366f1; 
-                if (r.name.includes("Bath")) color = 0x22d3ee;
-                if (r.name.includes("Kitchen")) color = 0x10b981;
-                if (r.is_open) color = 0x475569;
-                if (r.floor === 1) color = r.name.includes("Bath") ? 0x06b6d4 : 0x818cf8;
+            const plinth = new THREE.Mesh(new THREE.BoxGeometry(lastParams.width + 1, 1.5, lastParams.length + 1), new THREE.MeshPhongMaterial({ color: 0x222222 }));
+            plinth.position.set(0, 0.25, 0); 
+            plinth.receiveShadow = true; 
+            plinth.castShadow = true; 
+            scene.add(plinth);
 
-                const material = new THREE.MeshPhongMaterial({ 
-                    color: color, transparent: true, opacity: 0.8, shininess: 100
-                });
+            const tileTex = createTileTexture();
+            const wallThickness = 0.6;
+            const wallColor = 0x68E0E0; // Cyan Blue
+            
+            // Materials
+            const wallMat = new THREE.MeshPhongMaterial({ color: wallColor });
+            const winMat = new THREE.MeshPhongMaterial({ color: 0x111111, shininess: 100 });
+            const doorMat = new THREE.MeshPhongMaterial({ color: 0x5C4033 });
+            const roofMat = new THREE.MeshPhongMaterial({ color: 0xffffff });
+
+            rooms.forEach(r => {
+                const floorLevel = (r.floor || 0) * 12 + 1.0; 
+                const isOpen = r.is_open;
+                const isStairs = r.name.includes("STAIRCASE");
                 
-                const roomMesh = new THREE.Mesh(geometry, material);
-                roomMesh.position.set(r.x + r.width/2 - lastParams.width/2, floorLevel + (wallH/2), r.y + r.height/2 - lastParams.length/2);
-                scene.add(roomMesh);
+                const wallH = (isOpen && !isStairs) ? 3.5 : 11; 
+                const cx = r.x + r.width/2 - lastParams.width/2;
+                const cz = r.y + r.height/2 - lastParams.length/2;
+
+                // Floor mesh
+                const floor = new THREE.Mesh(new THREE.PlaneGeometry(r.width, r.height), new THREE.MeshPhongMaterial(isOpen ? { map: tileTex } : { color: 0xdddddd }));
+                floor.rotation.x = -Math.PI / 2; 
+                floor.position.set(cx, floorLevel, cz); 
+                floor.receiveShadow = true; 
+                scene.add(floor);
+
+                // Build walls
+                const buildWall = (w, h, d, px, py, pz) => {
+                    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
+                    mesh.position.set(px, py, pz); 
+                    mesh.castShadow = true; 
+                    mesh.receiveShadow = true; 
+                    scene.add(mesh);
+                };
+
+                // Dollhouse Cutaway! Hide the front and left walls of the staircase to see inside.
+                buildWall(r.width, wallH, wallThickness, cx, floorLevel + wallH/2, cz - r.height/2); // Back Wall
+                if (!isStairs) buildWall(r.width, wallH, wallThickness, cx, floorLevel + wallH/2, cz + r.height/2); // Front Wall
+                if (!isStairs) buildWall(wallThickness, wallH, r.height, cx - r.width/2, floorLevel + wallH/2, cz); // Left Wall
+                buildWall(wallThickness, wallH, r.height, cx + r.width/2, floorLevel + wallH/2, cz); // Right Wall
+
+                // Roof
+                if (!isOpen || isStairs) {
+                    const roof = new THREE.Mesh(new THREE.BoxGeometry(r.width + 0.2, 0.5, r.height + 0.2), roofMat);
+                    roof.position.set(cx, floorLevel + wallH + 0.25, cz); 
+                    roof.castShadow = true; 
+                    roof.receiveShadow = true; 
+                    scene.add(roof);
+                }
+
+                // 3D U-Shaped Stairs
+                if (isStairs) {
+                    const landingD = 3.5;
+                    const flightW = (r.width - 0.4) / 2;
+                    const steps = 8;
+                    const stepH = 12 / (steps * 2);
+                    const stepD = (r.height - landingD) / steps;
+
+                    // Mid Landing
+                    const landing = new THREE.Mesh(new THREE.BoxGeometry(r.width - 0.2, 0.5, landingD), new THREE.MeshPhongMaterial({color: 0x999999}));
+                    landing.position.set(cx, floorLevel + 6, cz - r.height/2 + landingD/2); 
+                    scene.add(landing);
+
+                    // Flight 1 (Up to Landing)
+                    for(let i=0; i<steps; i++) {
+                        const h = stepH * (i+1);
+                        const step = new THREE.Mesh(new THREE.BoxGeometry(flightW, h, stepD), new THREE.MeshPhongMaterial({color: 0xaaaaaa}));
+                        step.position.set(cx + flightW/2 + 0.1, floorLevel + h/2, cz + r.height/2 - (i*stepD) - stepD/2); 
+                        scene.add(step);
+                    }
+                    // Flight 2 (Landing to Next Floor)
+                    for(let j=0; j<steps; j++) {
+                        const h = 6 + stepH * (j+1);
+                        const step = new THREE.Mesh(new THREE.BoxGeometry(flightW, h, stepD), new THREE.MeshPhongMaterial({color: 0xaaaaaa}));
+                        step.position.set(cx - flightW/2 - 0.1, floorLevel + h/2, cz - r.height/2 + landingD + (j*stepD) + stepD/2); 
+                        scene.add(step);
+                    }
+                }
+
+                // Append 3D Doors & Windows
+                if (r.features) {
+                    r.features.forEach(f => {
+                        const isHoriz = (f.wall === 'top' || f.wall === 'bottom');
+                        const px = r.x + (f.wall === 'top' || f.wall === 'bottom' ? f.pos : (f.wall === 'left' ? 0 : r.width)) - lastParams.width/2;
+                        const pz = r.y + (f.wall === 'left' || f.wall === 'right' ? f.pos : (f.wall === 'top' ? 0 : r.height)) - lastParams.length/2;
+
+                        if (f.type === 'window') {
+                            const winMesh = new THREE.Mesh(new THREE.BoxGeometry(isHoriz ? f.size : 1.5, 4, isHoriz ? 1.5 : f.size), winMat);
+                            winMesh.position.set(px, floorLevel + 5, pz); 
+                            scene.add(winMesh);
+                        } else if (f.type === 'door' || f.type === 'main_door') {
+                            const doorMesh = new THREE.Mesh(new THREE.BoxGeometry(isHoriz ? f.size : 1.2, 7, isHoriz ? 1.2 : f.size), doorMat);
+                            doorMesh.position.set(px, floorLevel + 3.5, pz); 
+                            scene.add(doorMesh);
+                        }
+                    });
+                }
             });
 
-            function animate() {
-                requestAnimationFrame(animate);
-                controls.update();
-                renderer.render(scene, camera);
+            function animate() { 
+                requestAnimationFrame(animate); 
+                controls.update(); 
+                renderer.render(scene, camera); 
             }
             animate();
         }
 
+        // ==========================================
+        //         UI CONTROLS
+        // ==========================================
         function show2D() {
-            document.getElementById('floorPlanCanvas').style.display = 'block';
+            document.getElementById('floorPlanCanvas').style.display = 'block'; 
             document.getElementById('threeJsContainer').style.display = 'none';
-            document.getElementById('btn-2d').style.borderBottom = '2px solid var(--primary)';
+            document.getElementById('btn-2d').style.borderBottom = '2px solid var(--primary)'; 
             document.getElementById('btn-3d').style.borderBottom = 'none';
         }
 
         function show3D() {
-            document.getElementById('floorPlanCanvas').style.display = 'none';
+            document.getElementById('floorPlanCanvas').style.display = 'none'; 
             document.getElementById('threeJsContainer').style.display = 'block';
-            document.getElementById('btn-3d').style.borderBottom = '2px solid var(--primary)';
+            document.getElementById('btn-3d').style.borderBottom = '2px solid var(--primary)'; 
             document.getElementById('btn-2d').style.borderBottom = 'none';
             init3D(currentPlan.rooms);
         }
