@@ -84,7 +84,7 @@ def add_architectural_details(rooms, plot_w, plot_h):
         r["features"] = features
     return rooms
 
-def pack_bedrooms(start_x, start_y, total_w, total_h, num_beds, floor_level, name_prefix="BED"):
+def pack_bedrooms(start_x: float, start_y: float, total_w: float, total_h: float, num_beds: int, floor_level: int, name_prefix: str = "BED") -> list:
     """ Advanced Space Partitioning with strict 10x10 minimum rule and internal bathroom doors. """
     rooms = []
     if num_beds <= 0 or total_w < 10.0 or total_h < 10.0: return rooms
@@ -93,24 +93,24 @@ def pack_bedrooms(start_x, start_y, total_w, total_h, num_beds, floor_level, nam
 
     max_cols = max(1, int(total_w // MIN_W))
     cols = min(num_beds, max_cols)
-    rows = math.ceil(num_beds / cols)
+    rows = int(math.ceil(num_beds / cols))
     
     if (total_h / rows) < MIN_H:
         rows = max(1, int(total_h // MIN_H))
-        cols = math.ceil(num_beds / rows)
+        cols = int(math.ceil(num_beds / rows))
         if (total_w / cols) < MIN_W: cols = max(1, int(total_w // MIN_W))
             
     cell_h = total_h / rows
     
-    count = 0
     for r in range(rows):
-        beds_left = num_beds - count
-        actual_cols = min(cols, beds_left)
+        beds_left = num_beds - (r * cols)
+        actual_cols = int(min(cols, beds_left))
         cell_w = total_w / actual_cols
         
         for c in range(actual_cols):
             x = start_x + (c * cell_w)
             y = start_y + (r * cell_h)
+            count = (r * cols) + c
             room_name = f"{name_prefix} {count+1}"
             
             # ATTACHED BATHROOM LOGIC
@@ -122,7 +122,7 @@ def pack_bedrooms(start_x, start_y, total_w, total_h, num_beds, floor_level, nam
                 bed_w = cell_w - bath_w
                 rooms.append({"name": room_name, "x": x, "y": y, "width": bed_w, "height": cell_h, "floor": floor_level})
                 
-                bath_room = {"name": "ATTACHED BATH", "x": x + bed_w, "y": y, "width": bath_w, "height": bath_h_actual, "floor": floor_level}
+                bath_room: dict = {"name": "ATTACHED BATH", "x": x + bed_w, "y": y, "width": bath_w, "height": bath_h_actual, "floor": floor_level}
                 bath_room["features"] = [{"type": "door", "wall": "left", "pos": bath_h_actual/2, "size": 2.5}]
                 rooms.append(bath_room)
                 
@@ -133,16 +133,12 @@ def pack_bedrooms(start_x, start_y, total_w, total_h, num_beds, floor_level, nam
                 bed_h = cell_h - bath_h
                 rooms.append({"name": room_name, "x": x, "y": y, "width": cell_w, "height": bed_h, "floor": floor_level})
                 
-                bath_room = {"name": "ATTACHED BATH", "x": x, "y": y + bed_h, "width": bath_w_actual, "height": bath_h, "floor": floor_level}
+                bath_room: dict = {"name": "ATTACHED BATH", "x": x, "y": y + bed_h, "width": bath_w_actual, "height": bath_h, "floor": floor_level}
                 bath_room["features"] = [{"type": "door", "wall": "top", "pos": bath_w_actual/2, "size": 2.5}]
                 rooms.append(bath_room)
                 
             else:
                 rooms.append({"name": room_name, "x": x, "y": y, "width": cell_w, "height": cell_h, "floor": floor_level})
-                
-            count += 1
-            if count >= num_beds: break
-        if count >= num_beds: break
                 
     return rooms
 
