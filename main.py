@@ -7,7 +7,6 @@ import layout_engine
 
 app = FastAPI(title="HouseAI Pro Architecture API")
 
-# Enable CORS so your local HTML file can communicate with this server
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
@@ -16,35 +15,41 @@ app.add_middleware(
     allow_headers=["*"],  
 )
 
-# UPGRADED DATA MODEL: Now expects the custom prompt, style, and extras!
+# UPGRADED MODEL: Now expects `units` integer
 class PlotData(BaseModel):
     length: float = 40.0
     width: float = 30.0
     bedrooms: int = 2
+    units: int = 1         # <--- NEW FIELD FOR SHOPS/APARTMENTS
     building_type: str = "House"
     style: str = "Modern"
     extras: List[str] = []
-    custom_reqs: str = ""  # <--- NEW FIELD FOR THE AI PROMPT BOX
+    custom_reqs: str = ""  
 
 @app.post("/get-my-plan")
 async def get_plan(data: PlotData):
-    # Convert Pydantic model to a standard dictionary for our engine
     data_dict = data.dict()
     
-    # 1. Generate the Layout (This will soon handle the custom prompt!)
+    # Generate Layout
     plan = layout_engine.generate_layout(data_dict)
     
-    # 2. Generate the precise Resource & Budget Estimate
+    # Calculate BOQ
     budget, materials = layout_engine.estimate_resources(data.length, data.width, data.bedrooms)
     
-    # 3. Create a dynamic AI advice string based on what the user asked for
     extras_text = f" Included features: {', '.join(data.extras)}." if data.extras else ""
     prompt_text = " Processed custom AI requirements." if data.custom_reqs.strip() else ""
-    advice = f"Optimized {data.style} {data.building_type} design complete.{extras_text}{prompt_text} Calculated exact BOQ for {int(data.length * data.width)} sq.ft."
     
+    # Dynamic advice string based on building type
+    if data.building_type == "Shop":
+        advice = f"Optimized {data.units}-unit Commercial Plaza design complete.{prompt_text}"
+    elif data.building_type == "Apartment":
+        advice = f"Optimized multi-unit Apartment design complete.{extras_text}{prompt_text}"
+    else:
+        advice = f"Optimized {data.style} {data.building_type} design complete.{extras_text}{prompt_text}"
+        
     return {
         "plan": plan,
-        "score": 95 if data.custom_reqs else 98, # Slight variation for realism
+        "score": 95 if data.custom_reqs else 98,
         "ai_advice": advice,
         "budget": budget,
         "materials": materials

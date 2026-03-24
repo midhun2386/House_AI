@@ -36,7 +36,7 @@
 
         header h1 {
             font-size: 3.5rem; font-weight: 800; background: linear-gradient(to right, #ffffff, #22d3ee);
-            background-clip: text; -webkit-background-clip: text; color: transparent; letter-spacing: -1px;
+            -webkit-background-clip: text; color: transparent; letter-spacing: -1px;
         }
 
         .main-grid { display: grid; grid-template-columns: 350px 1fr; gap: 2rem; }
@@ -44,9 +44,9 @@
         
         .input-group { margin-bottom: 1.2rem; }
         .input-group label { display: block; font-size: 0.875rem; color: var(--text-dim); margin-bottom: 0.5rem; }
-        .input-group input, .input-group select {
+        .input-group input, .input-group select, .input-group textarea {
             width: 100%; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0.75rem; border-radius: 8px; color: white; font-size: 1rem; appearance: none;
+            padding: 0.75rem; border-radius: 8px; color: white; font-size: 1rem; appearance: none; font-family: 'Outfit', sans-serif;
         }
         
         .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
@@ -101,7 +101,7 @@
 
                 <div class="input-group">
                     <label>Building Type</label>
-                    <select id="building_type">
+                    <select id="building_type" onchange="updateDynamicFields()">
                         <option value="House">Residential House</option>
                         <option value="Apartment">Apartment Complex</option>
                         <option value="Shop">Commercial Shop</option>
@@ -117,11 +117,15 @@
                     </select>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group" id="bed_group">
                     <label>Bedrooms Wanted</label>
                     <input type="number" id="bedrooms" value="3" min="1" max="5">
                 </div>
 
+                <div class="input-group" id="unit_group" style="display: none;">
+                    <label id="unit_label">Total Units</label>
+                    <input type="number" id="units" value="4" min="1" max="50">
+                </div>
                 <label style="display: block; font-size: 0.875rem; color: var(--text-dim); margin-bottom: 0.8rem;">Premium Extras</label>
                 <div class="checkbox-grid">
                     <label class="checkbox-label"><input type="checkbox" name="extras" value="Garden"> Lush Garden</label>
@@ -132,7 +136,7 @@
 
                 <div class="input-group">
                     <label>Custom Requirements (AI prompt)</label>
-                    <textarea id="custom_reqs" rows="3" placeholder="e.g., I want a big backyard garden and a swimming pool..." style="width: 100%; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.75rem; border-radius: 8px; color: white; font-size: 0.9rem; resize: vertical; font-family: 'Outfit', sans-serif;"></textarea>
+                    <textarea id="custom_reqs" rows="3" placeholder="e.g., I want a big backyard garden and a swimming pool..."></textarea>
                 </div>
                 
                 <button class="btn-primary" onclick="generatePlan()">Generate Architecture Plan</button>
@@ -171,6 +175,30 @@
     </div>
 
     <script>
+        // NEW: Dynamic UI logic to show/hide fields!
+        function updateDynamicFields() {
+            const bType = document.getElementById('building_type').value;
+            const bedGroup = document.getElementById('bed_group');
+            const unitGroup = document.getElementById('unit_group');
+            const unitLabel = document.getElementById('unit_label');
+
+            if (bType === 'House') {
+                bedGroup.style.display = 'block';
+                unitGroup.style.display = 'none';
+            } else if (bType === 'Apartment') {
+                bedGroup.style.display = 'block';
+                unitGroup.style.display = 'block';
+                unitLabel.innerText = 'Total Apartments';
+            } else if (bType === 'Shop') {
+                bedGroup.style.display = 'none'; // Hide bedrooms!
+                unitGroup.style.display = 'block';
+                unitLabel.innerText = 'Number of Shops';
+            }
+        }
+        
+        // Run once on load to set initial state
+        window.onload = updateDynamicFields;
+
         let currentPlan = null;
         let lastParams = { width: 30, length: 40 };
         let scene, camera, renderer, controls;
@@ -179,11 +207,11 @@
             const extraCheckboxes = document.querySelectorAll('input[name="extras"]:checked');
             const extrasArray = Array.from(extraCheckboxes).map(cb => cb.value);
 
-            // NEW: Capturing the custom text requirement!
             const data = {
                 length: parseFloat(document.getElementById('length').value),
                 width: parseFloat(document.getElementById('width').value),
                 bedrooms: parseInt(document.getElementById('bedrooms').value),
+                units: parseInt(document.getElementById('units').value) || 1, // NEW: Capture unit count
                 building_type: document.getElementById('building_type').value,
                 style: document.getElementById('style').value,
                 extras: extrasArray,
@@ -274,7 +302,7 @@
                     ctx.strokeRect(rx, ry, rw, rh); 
                     ctx.setLineDash([]);
                     
-                    if (r.name.toLowerCase().match(/stair|parking|open|balcony|garden|pool/)) {
+                    if (r.name.toLowerCase().match(/stair|parking|open|balcony|garden|pool|walkway/)) {
                         ctx.lineWidth = 0.5; 
                         ctx.beginPath();
                         ctx.moveTo(rx, ry); ctx.lineTo(rx + rw, ry + rh);
@@ -328,12 +356,12 @@
                             }
                             ctx.stroke();
                         }
-                        else if (f.type === 'gate') {
+                        else if (f.type === 'gate' || f.type === 'shutter') {
                             ctx.setLineDash([4, 4]);
                             ctx.beginPath(); ctx.moveTo(cx - fSize/2, cy); ctx.lineTo(cx + fSize/2, cy); ctx.stroke();
                             ctx.setLineDash([]);
                             ctx.font = `italic 10px Arial`; ctx.textAlign = "center";
-                            ctx.fillText("GATE", cx, cy - 10);
+                            ctx.fillText(f.type.toUpperCase(), cx, cy - 10);
                         }
                         else if (f.type === 'arch') {
                             ctx.setLineDash([2, 2]);
@@ -442,7 +470,6 @@
                 const cx = r.x + r.width/2 - lastParams.width/2;
                 const cz = r.y + r.height/2 - lastParams.length/2;
 
-                // Handle pool logic (blue floor, no walls)
                 let floorColor = 0xdddddd;
                 if (isOpen) floorColor = tileTex;
                 if (isPool) floorColor = new THREE.MeshPhongMaterial({ color: 0x00aaff });
@@ -452,7 +479,7 @@
                 const floor = new THREE.Mesh(new THREE.PlaneGeometry(r.width, r.height), floorMat);
                 floor.rotation.x = -Math.PI / 2; floor.position.set(cx, floorLevel, cz); floor.receiveShadow = true; scene.add(floor);
 
-                if (isPool || isGarden) return; // Skip walls and roof for backyard features!
+                if (isPool || isGarden) return; 
 
                 const buildWall = (w, h, d, px, py, pz) => {
                     const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
