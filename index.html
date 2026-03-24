@@ -11,34 +11,21 @@
     
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --bg-dark: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
+            --primary: #6366f1; --primary-hover: #4f46e5; --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7); --text-main: #f8fafc; --text-dim: #94a3b8;
             --accent: #22d3ee;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s ease; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark); color: var(--text-main); font-family: 'Outfit', sans-serif;
             min-height: 100vh;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, rgba(34, 211, 238, 0.1) 0, transparent 50%);
+            background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0, transparent 50%), 
+                              radial-gradient(at 50% 0%, rgba(34, 211, 238, 0.1) 0, transparent 50%);
         }
 
-        .glass {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-        }
-
+        .glass { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; }
         .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
 
         header {
@@ -48,23 +35,27 @@
         }
 
         header h1 {
-            font-size: 3.5rem; font-weight: 800; 
-            background: linear-gradient(to right, #ffffff, #22d3ee);
-            -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -1px;
+            font-size: 3.5rem; font-weight: 800; background: linear-gradient(to right, #ffffff, #22d3ee);
+            background-clip: text; -webkit-background-clip: text; color: transparent; letter-spacing: -1px;
         }
 
         .main-grid { display: grid; grid-template-columns: 350px 1fr; gap: 2rem; }
         .sidebar { padding: 2rem; height: fit-content; }
-        .input-group { margin-bottom: 1.5rem; }
+        
+        .input-group { margin-bottom: 1.2rem; }
         .input-group label { display: block; font-size: 0.875rem; color: var(--text-dim); margin-bottom: 0.5rem; }
-        .input-group input {
+        .input-group input, .input-group select {
             width: 100%; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0.75rem; border-radius: 8px; color: white; font-size: 1rem;
+            padding: 0.75rem; border-radius: 8px; color: white; font-size: 1rem; appearance: none;
         }
         
+        .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
+        .checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-dim); cursor: pointer; }
+        .checkbox-label input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+
         .btn-primary {
             width: 100%; padding: 1rem; background: var(--primary); color: white; border: none;
-            border-radius: 8px; font-weight: 600; cursor: pointer;
+            border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 1rem;
         }
         .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
 
@@ -77,6 +68,7 @@
         #floorPlanCanvas, #threeJsContainer { width: 100%; height: 600px; border-radius: 12px; background: #fff; margin-top: 1rem; }
         #threeJsContainer { background: #0f172a; overflow: hidden; }
         .view-switcher { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        
         .results-card { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
         .stat-item { background: rgba(15, 23, 42, 0.3); padding: 1rem; border-radius: 8px; }
@@ -94,22 +86,59 @@
         
         <div class="main-grid">
             <aside class="sidebar glass">
-                <h3>Design Requirements</h3>
-                <div class="input-group">
-                    <label>Plot Length (ft)</label>
-                    <input type="number" id="length" value="40">
+                <h3 style="margin-bottom: 1rem;">Client Brief</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="input-group">
+                        <label>Length (ft)</label>
+                        <input type="number" id="length" value="40">
+                    </div>
+                    <div class="input-group">
+                        <label>Width (ft)</label>
+                        <input type="number" id="width" value="30">
+                    </div>
                 </div>
+
                 <div class="input-group">
-                    <label>Plot Width (ft)</label>
-                    <input type="number" id="width" value="30">
+                    <label>Building Type</label>
+                    <select id="building_type">
+                        <option value="House">Residential House</option>
+                        <option value="Apartment">Apartment Complex</option>
+                        <option value="Shop">Commercial Shop</option>
+                    </select>
                 </div>
+
+                <div class="input-group">
+                    <label>Architectural Style</label>
+                    <select id="style">
+                        <option value="Modern">Modern Minimalist</option>
+                        <option value="Classic">Classic Traditional</option>
+                        <option value="Tech">High-Tech Smart Home</option>
+                    </select>
+                </div>
+
                 <div class="input-group">
                     <label>Bedrooms Wanted</label>
-                    <input type="number" id="bedrooms" value="3">
+                    <input type="number" id="bedrooms" value="3" min="1" max="5">
                 </div>
+
+                <label style="display: block; font-size: 0.875rem; color: var(--text-dim); margin-bottom: 0.8rem;">Premium Extras</label>
+                <div class="checkbox-grid">
+                    <label class="checkbox-label"><input type="checkbox" name="extras" value="Garden"> Lush Garden</label>
+                    <label class="checkbox-label"><input type="checkbox" name="extras" value="Pool"> Swimming Pool</label>
+                    <label class="checkbox-label"><input type="checkbox" name="extras" value="Garage"> Enclosed Garage</label>
+                    <label class="checkbox-label"><input type="checkbox" name="extras" value="Vastu"> Vastu Compliant</label>
+                </div>
+
+                <div class="input-group">
+                    <label>Custom Requirements (AI prompt)</label>
+                    <textarea id="custom_reqs" rows="3" placeholder="e.g., I want a big backyard garden and a swimming pool..." style="width: 100%; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.75rem; border-radius: 8px; color: white; font-size: 0.9rem; resize: vertical; font-family: 'Outfit', sans-serif;"></textarea>
+                </div>
+                
                 <button class="btn-primary" onclick="generatePlan()">Generate Architecture Plan</button>
                 
                 <div id="resultsCard" class="results-card" style="display:none;">
+                    <div id="aiMessage" style="margin: 1rem 0; padding: 1rem; background: rgba(99, 102, 241, 0.05); border-left: 4px solid var(--primary); border-radius: 4px; font-size: 0.9rem; line-height: 1.5;"></div>
                     <div class="stat-grid">
                         <div class="stat-item">
                             <span class="stat-label">AI Score</span>
@@ -119,6 +148,10 @@
                             <span class="stat-label">Est. Budget</span>
                             <div class="stat-value" id="budgetTxt">--</div>
                         </div>
+                    </div>
+                    <div style="margin-top:1.5rem;">
+                        <span class="stat-label">Resource Estimation</span>
+                        <div id="materialsTxt" style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.5rem; line-height: 1.6;">--</div>
                     </div>
                 </div>
             </aside>
@@ -143,11 +176,20 @@
         let scene, camera, renderer, controls;
 
         async function generatePlan() {
+            const extraCheckboxes = document.querySelectorAll('input[name="extras"]:checked');
+            const extrasArray = Array.from(extraCheckboxes).map(cb => cb.value);
+
+            // NEW: Capturing the custom text requirement!
             const data = {
                 length: parseFloat(document.getElementById('length').value),
                 width: parseFloat(document.getElementById('width').value),
-                bedrooms: parseInt(document.getElementById('bedrooms').value)
+                bedrooms: parseInt(document.getElementById('bedrooms').value),
+                building_type: document.getElementById('building_type').value,
+                style: document.getElementById('style').value,
+                extras: extrasArray,
+                custom_reqs: document.getElementById('custom_reqs').value 
             };
+            
             lastParams = { width: data.width, length: data.length };
 
             try {
@@ -167,6 +209,11 @@
                 document.getElementById('layoutTitle').innerText = currentPlan.layout_type;
                 document.getElementById('aiScoreTxt').innerText = `${result.score}/100`;
                 document.getElementById('budgetTxt').innerText = result.budget;
+                document.getElementById('aiMessage').innerText = result.ai_advice;
+                
+                if(result.materials) {
+                    document.getElementById('materialsTxt').innerHTML = result.materials.replace(/,/g, '<br>');
+                }
                 
                 show2D(); 
                 draw2D(currentPlan.rooms, data.width, data.length);
@@ -212,7 +259,6 @@
                 ctx.strokeRect(startX, startY, plotW * scale, plotL * scale); 
                 ctx.setLineDash([]);
 
-                // Draw Walls
                 floorRooms.forEach(r => {
                     const rx = startX + r.x * scale;
                     const ry = startY + r.y * scale;
@@ -228,7 +274,7 @@
                     ctx.strokeRect(rx, ry, rw, rh); 
                     ctx.setLineDash([]);
                     
-                    if (r.name.toLowerCase().match(/stair|parking|open|balcony/)) {
+                    if (r.name.toLowerCase().match(/stair|parking|open|balcony|garden|pool/)) {
                         ctx.lineWidth = 0.5; 
                         ctx.beginPath();
                         ctx.moveTo(rx, ry); ctx.lineTo(rx + rw, ry + rh);
@@ -237,7 +283,6 @@
                     }
                 });
 
-                // Draw Architectural Features (Doors, Windows)
                 floorRooms.forEach(r => {
                     if (!r.features) return;
                     r.features.forEach(f => {
@@ -301,7 +346,6 @@
                     });
                 });
 
-                // Draw Text
                 floorRooms.forEach(r => {
                     const cx = startX + r.x * scale + (r.width * scale) / 2;
                     const cy = startY + r.y * scale + (r.height * scale) / 2;
@@ -337,17 +381,11 @@
             canvas.width = 128; canvas.height = 128;
             const ctx = canvas.getContext('2d');
             
-            ctx.fillStyle = '#b65c3e'; // Dark terracotta
-            ctx.fillRect(0,0,128,128); 
-            
-            ctx.fillStyle = '#cf7a5c'; // Light terracotta
-            ctx.fillRect(0,0,64,64); 
-            ctx.fillRect(64,64,64,64);
+            ctx.fillStyle = '#b65c3e'; ctx.fillRect(0,0,128,128); 
+            ctx.fillStyle = '#cf7a5c'; ctx.fillRect(0,0,64,64); ctx.fillRect(64,64,64,64);
             
             const tex = new THREE.CanvasTexture(canvas); 
-            tex.wrapS = THREE.RepeatWrapping; 
-            tex.wrapT = THREE.RepeatWrapping; 
-            tex.repeat.set(12, 12); 
+            tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(12, 12); 
             return tex;
         }
 
@@ -357,50 +395,37 @@
             const w = container.offsetWidth, h = 600;
             
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x87CEEB); // Realistic Sky Blue
+            scene.background = new THREE.Color(0x87CEEB); 
             
             camera = new THREE.PerspectiveCamera(50, w / h, 1, 2000);
-            camera.position.set(-60, 70, -80); // Front-left view
+            camera.position.set(-60, 70, -80); 
             
             renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(w, h); 
-            renderer.shadowMap.enabled = true; 
+            renderer.setSize(w, h); renderer.shadowMap.enabled = true; 
             container.appendChild(renderer.domElement);
 
-            // Lighting
             scene.add(new THREE.AmbientLight(0xffffff, 0.5));
             const sunLight = new THREE.DirectionalLight(0xffffff, 0.7);
             sunLight.position.set(-100, 200, -50); 
             sunLight.castShadow = true;
-            sunLight.shadow.camera.left = -50; 
-            sunLight.shadow.camera.right = 50; 
-            sunLight.shadow.camera.top = 50; 
-            sunLight.shadow.camera.bottom = -50;
+            sunLight.shadow.camera.left = -50; sunLight.shadow.camera.right = 50; 
+            sunLight.shadow.camera.top = 50; sunLight.shadow.camera.bottom = -50;
             scene.add(sunLight);
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true; 
-            controls.maxPolarAngle = Math.PI / 2 - 0.05;
+            controls.enableDamping = true; controls.maxPolarAngle = Math.PI / 2 - 0.05;
             controls.target.set(0, 10, 0);
 
-            // Environment
             const ground = new THREE.Mesh(new THREE.PlaneGeometry(300, 300), new THREE.MeshPhongMaterial({ color: 0x4a5d23 }));
-            ground.rotation.x = -Math.PI/2; 
-            ground.position.y = -0.5; 
-            ground.receiveShadow = true; 
-            scene.add(ground);
+            ground.rotation.x = -Math.PI/2; ground.position.y = -0.5; ground.receiveShadow = true; scene.add(ground);
 
             const plinth = new THREE.Mesh(new THREE.BoxGeometry(lastParams.width + 1, 1.5, lastParams.length + 1), new THREE.MeshPhongMaterial({ color: 0x222222 }));
-            plinth.position.set(0, 0.25, 0); 
-            plinth.receiveShadow = true; 
-            plinth.castShadow = true; 
-            scene.add(plinth);
+            plinth.position.set(0, 0.25, 0); plinth.receiveShadow = true; plinth.castShadow = true; scene.add(plinth);
 
             const tileTex = createTileTexture();
             const wallThickness = 0.6;
-            const wallColor = 0x68E0E0; // Cyan Blue
+            const wallColor = 0x68E0E0; 
             
-            // Materials
             const wallMat = new THREE.MeshPhongMaterial({ color: wallColor });
             const winMat = new THREE.MeshPhongMaterial({ color: 0x111111, shininess: 100 });
             const doorMat = new THREE.MeshPhongMaterial({ color: 0x5C4033 });
@@ -410,72 +435,59 @@
                 const floorLevel = (r.floor || 0) * 12 + 1.0; 
                 const isOpen = r.is_open;
                 const isStairs = r.name.includes("STAIRCASE");
+                const isPool = r.name.includes("POOL");
+                const isGarden = r.name.includes("GARDEN");
                 
                 const wallH = (isOpen && !isStairs) ? 3.5 : 11; 
                 const cx = r.x + r.width/2 - lastParams.width/2;
                 const cz = r.y + r.height/2 - lastParams.length/2;
 
-                // Floor mesh
-                const floor = new THREE.Mesh(new THREE.PlaneGeometry(r.width, r.height), new THREE.MeshPhongMaterial(isOpen ? { map: tileTex } : { color: 0xdddddd }));
-                floor.rotation.x = -Math.PI / 2; 
-                floor.position.set(cx, floorLevel, cz); 
-                floor.receiveShadow = true; 
-                scene.add(floor);
+                // Handle pool logic (blue floor, no walls)
+                let floorColor = 0xdddddd;
+                if (isOpen) floorColor = tileTex;
+                if (isPool) floorColor = new THREE.MeshPhongMaterial({ color: 0x00aaff });
+                if (isGarden) floorColor = new THREE.MeshPhongMaterial({ color: 0x228B22 });
 
-                // Build walls
+                const floorMat = (isPool || isGarden) ? floorColor : new THREE.MeshPhongMaterial(isOpen ? { map: tileTex } : { color: 0xdddddd });
+                const floor = new THREE.Mesh(new THREE.PlaneGeometry(r.width, r.height), floorMat);
+                floor.rotation.x = -Math.PI / 2; floor.position.set(cx, floorLevel, cz); floor.receiveShadow = true; scene.add(floor);
+
+                if (isPool || isGarden) return; // Skip walls and roof for backyard features!
+
                 const buildWall = (w, h, d, px, py, pz) => {
                     const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
-                    mesh.position.set(px, py, pz); 
-                    mesh.castShadow = true; 
-                    mesh.receiveShadow = true; 
-                    scene.add(mesh);
+                    mesh.position.set(px, py, pz); mesh.castShadow = true; mesh.receiveShadow = true; scene.add(mesh);
                 };
 
-                // Dollhouse Cutaway! Hide the front and left walls of the staircase to see inside.
-                buildWall(r.width, wallH, wallThickness, cx, floorLevel + wallH/2, cz - r.height/2); // Back Wall
-                if (!isStairs) buildWall(r.width, wallH, wallThickness, cx, floorLevel + wallH/2, cz + r.height/2); // Front Wall
-                if (!isStairs) buildWall(wallThickness, wallH, r.height, cx - r.width/2, floorLevel + wallH/2, cz); // Left Wall
-                buildWall(wallThickness, wallH, r.height, cx + r.width/2, floorLevel + wallH/2, cz); // Right Wall
+                buildWall(r.width, wallH, wallThickness, cx, floorLevel + wallH/2, cz - r.height/2); 
+                if (!isStairs) buildWall(r.width, wallH, wallThickness, cx, floorLevel + wallH/2, cz + r.height/2); 
+                if (!isStairs) buildWall(wallThickness, wallH, r.height, cx - r.width/2, floorLevel + wallH/2, cz); 
+                buildWall(wallThickness, wallH, r.height, cx + r.width/2, floorLevel + wallH/2, cz); 
 
-                // Roof
                 if (!isOpen || isStairs) {
                     const roof = new THREE.Mesh(new THREE.BoxGeometry(r.width + 0.2, 0.5, r.height + 0.2), roofMat);
-                    roof.position.set(cx, floorLevel + wallH + 0.25, cz); 
-                    roof.castShadow = true; 
-                    roof.receiveShadow = true; 
-                    scene.add(roof);
+                    roof.position.set(cx, floorLevel + wallH + 0.25, cz); roof.castShadow = true; roof.receiveShadow = true; scene.add(roof);
                 }
 
-                // 3D U-Shaped Stairs
                 if (isStairs) {
-                    const landingD = 3.5;
-                    const flightW = (r.width - 0.4) / 2;
-                    const steps = 8;
-                    const stepH = 12 / (steps * 2);
-                    const stepD = (r.height - landingD) / steps;
+                    const landingD = 3.5; const flightW = (r.width - 0.4) / 2; const steps = 8;
+                    const stepH = 12 / (steps * 2); const stepD = (r.height - landingD) / steps;
 
-                    // Mid Landing
                     const landing = new THREE.Mesh(new THREE.BoxGeometry(r.width - 0.2, 0.5, landingD), new THREE.MeshPhongMaterial({color: 0x999999}));
-                    landing.position.set(cx, floorLevel + 6, cz - r.height/2 + landingD/2); 
-                    scene.add(landing);
+                    landing.position.set(cx, floorLevel + 6, cz - r.height/2 + landingD/2); scene.add(landing);
 
-                    // Flight 1 (Up to Landing)
                     for(let i=0; i<steps; i++) {
                         const h = stepH * (i+1);
                         const step = new THREE.Mesh(new THREE.BoxGeometry(flightW, h, stepD), new THREE.MeshPhongMaterial({color: 0xaaaaaa}));
-                        step.position.set(cx + flightW/2 + 0.1, floorLevel + h/2, cz + r.height/2 - (i*stepD) - stepD/2); 
-                        scene.add(step);
+                        step.position.set(cx + flightW/2 + 0.1, floorLevel + h/2, cz + r.height/2 - (i*stepD) - stepD/2); scene.add(step);
                     }
-                    // Flight 2 (Landing to Next Floor)
                     for(let j=0; j<steps; j++) {
                         const h = 6 + stepH * (j+1);
                         const step = new THREE.Mesh(new THREE.BoxGeometry(flightW, h, stepD), new THREE.MeshPhongMaterial({color: 0xaaaaaa}));
-                        step.position.set(cx - flightW/2 - 0.1, floorLevel + h/2, cz - r.height/2 + landingD + (j*stepD) + stepD/2); 
-                        scene.add(step);
+                        step.position.set(cx - flightW/2 - 0.1, floorLevel + h/2, cz - r.height/2 + landingD + (j*stepD) + stepD/2); scene.add(step);
                     }
                 }
 
-                // Append 3D Doors & Windows
                 if (r.features) {
                     r.features.forEach(f => {
                         const isHoriz = (f.wall === 'top' || f.wall === 'bottom');
@@ -484,40 +496,27 @@
 
                         if (f.type === 'window') {
                             const winMesh = new THREE.Mesh(new THREE.BoxGeometry(isHoriz ? f.size : 1.5, 4, isHoriz ? 1.5 : f.size), winMat);
-                            winMesh.position.set(px, floorLevel + 5, pz); 
-                            scene.add(winMesh);
+                            winMesh.position.set(px, floorLevel + 5, pz); scene.add(winMesh);
                         } else if (f.type === 'door' || f.type === 'main_door') {
                             const doorMesh = new THREE.Mesh(new THREE.BoxGeometry(isHoriz ? f.size : 1.2, 7, isHoriz ? 1.2 : f.size), doorMat);
-                            doorMesh.position.set(px, floorLevel + 3.5, pz); 
-                            scene.add(doorMesh);
+                            doorMesh.position.set(px, floorLevel + 3.5, pz); scene.add(doorMesh);
                         }
                     });
                 }
             });
 
-            function animate() { 
-                requestAnimationFrame(animate); 
-                controls.update(); 
-                renderer.render(scene, camera); 
-            }
+            function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
             animate();
         }
 
-        // ==========================================
-        //         UI CONTROLS
-        // ==========================================
         function show2D() {
-            document.getElementById('floorPlanCanvas').style.display = 'block'; 
-            document.getElementById('threeJsContainer').style.display = 'none';
-            document.getElementById('btn-2d').style.borderBottom = '2px solid var(--primary)'; 
-            document.getElementById('btn-3d').style.borderBottom = 'none';
+            document.getElementById('floorPlanCanvas').style.display = 'block'; document.getElementById('threeJsContainer').style.display = 'none';
+            document.getElementById('btn-2d').style.borderBottom = '2px solid var(--primary)'; document.getElementById('btn-3d').style.borderBottom = 'none';
         }
 
         function show3D() {
-            document.getElementById('floorPlanCanvas').style.display = 'none'; 
-            document.getElementById('threeJsContainer').style.display = 'block';
-            document.getElementById('btn-3d').style.borderBottom = '2px solid var(--primary)'; 
-            document.getElementById('btn-2d').style.borderBottom = 'none';
+            document.getElementById('floorPlanCanvas').style.display = 'none'; document.getElementById('threeJsContainer').style.display = 'block';
+            document.getElementById('btn-3d').style.borderBottom = '2px solid var(--primary)'; document.getElementById('btn-2d').style.borderBottom = 'none';
             init3D(currentPlan.rooms);
         }
     </script>

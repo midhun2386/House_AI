@@ -1,0 +1,11 @@
+{
+  "source_directories": [
+    "."
+  ],
+  "search_path": [
+    "c:\\users\\admin\\appdata\\local\\programs\\python\\python310\\lib\\site-packages",
+    "c:\\users\\admin\\appdata\\local\\programs\\python\\python310\\Lib",
+    "c:\\users\\admin\\appdata\\local\\programs\\python\\python310\\DLLs",
+    "c:\\users\\admin\\appdata\\local\\programs\\python\\python310"
+  ]
+}
